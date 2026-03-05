@@ -16,5 +16,12 @@ export const PROTO_REGISTRY: ProtoMeta[] = [
     status: 'wip',
     description: 'Active deals overview with quick actions',
   },
+    {
+    slug: 'figma-desktop',
+    title: 'Figma Desktop',
+    figma: '',
+    status: 'wip',
+    description: 'Figma desktop application prototype',
+  },
   // REGISTRY_PLACEHOLDER
 ];

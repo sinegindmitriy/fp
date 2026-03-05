@@ -12,6 +12,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./prototypes/deal-room/deal-room.component').then(m => m.DealRoomComponent),
   },
+    {
+    path: 'figma-desktop',
+    loadComponent: () =>
+      import('./prototypes/figma-desktop/figma-desktop.component').then(m => m.FigmaDesktopComponent),
+  },
   // PROTO_ROUTES_PLACEHOLDER
   {
     path: '**',
