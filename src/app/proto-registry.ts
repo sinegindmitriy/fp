@@ -16,5 +16,12 @@ export const PROTO_REGISTRY: ProtoMeta[] = [
     status: 'wip',
     description: 'Active deals overview with quick actions',
   },
+  {
+    slug: 'integrations-template',
+    title: 'Integrations – Project Template',
+    figma: 'https://www.figma.com/design/PITzEfwRA26GWSG2MvzmDy?node-id=41340:91979',
+    status: 'wip',
+    description: 'CA project template settings — Integrations tab with enable/disable flow and CA-locked state',
+  },
   // REGISTRY_PLACEHOLDER
 ];
