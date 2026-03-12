@@ -153,6 +153,73 @@ On merge, Vercel production re-deploys and the new card appears on the dashboard
 
 ---
 
+## Using Storybook components
+
+The team has an official Storybook at `https://storybook-fvdr-frontend.qa.stagevdr.com/`.
+
+**Rule: read from it, never write to it.** This repo has zero connection to the Storybook/frontend repo.
+
+### How to use a Storybook component in a prototype
+
+1. Open Storybook → find the component → click the **Docs** tab
+2. Click **Show code** to see the rendered HTML and CSS class names
+3. Copy that markup into the prototype's inline template
+4. Copy any `--ideals-*` CSS variables it uses into the component's inline `styles: [...]`
+
+The prototype is self-contained — reproduce the markup and styles locally. Do not import from the frontend repo.
+
+### Storybook CSS variables (prefix: `--ideals-`)
+
+These come from the main product design system. Use them when matching a Storybook component:
+
+| Variable                        | Use                        |
+|---------------------------------|----------------------------|
+| `--ideals-border-radius`        | `4px` — all rounded corners |
+| `--ideals-main-bg`              | Page/surface background    |
+| `--ideals-text-color`           | Body text                  |
+| `--ideals-document-icon-size`   | `1.25rem` — icon sizing    |
+| `--ideals-radio-button-size`    | `1rem` — radio controls    |
+
+Copy additional `--ideals-*` values directly from the Storybook "Show code" output as needed.
+
+### When to reach for Angular CDK instead
+
+For interactive patterns not covered by static markup (modals, focus traps, dropdowns, tooltips, drag-and-drop), use **Angular CDK** — it is the headless primitive layer built into the Angular ecosystem and requires no new dependency.
+
+```bash
+# Already available — no install needed if @angular/cdk is in package.json
+# Check: cat package.json | grep angular/cdk
+```
+
+**CDK modules available for use in prototypes:**
+
+| CDK module          | Import from                    | Use for                          |
+|---------------------|--------------------------------|----------------------------------|
+| `OverlayModule`     | `@angular/cdk/overlay`         | Dropdowns, tooltips, popovers    |
+| `A11yModule`        | `@angular/cdk/a11y`            | Focus trap inside modals         |
+| `DragDropModule`    | `@angular/cdk/drag-drop`       | Drag-and-drop reordering         |
+| `PortalModule`      | `@angular/cdk/portal`          | Render content outside component |
+| `ScrollingModule`   | `@angular/cdk/scrolling`       | Virtual scroll for long lists    |
+
+Import only what the prototype needs:
+
+```typescript
+import { OverlayModule } from '@angular/cdk/overlay';
+import { A11yModule }    from '@angular/cdk/a11y';
+
+@Component({
+  standalone: true,
+  imports: [CommonModule, OverlayModule, A11yModule],
+  ...
+})
+```
+
+**Do not use Angular CDK for things plain CSS handles** (transitions, hover states, visibility toggles). Only reach for it when the interaction genuinely requires it.
+
+Do not install `@angular/material` — it pulls in a full component library and conflicts with the design system visuals.
+
+---
+
 ## What NOT to do
 
 - Do not modify `tracker.service.ts`, `heatmap.component.ts`, or `app.component.ts` unless explicitly asked
