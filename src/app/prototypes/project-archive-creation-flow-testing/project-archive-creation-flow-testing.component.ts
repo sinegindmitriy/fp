@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TrackerService } from '../../services/tracker.service';
 import { DS_COMPONENTS, ToastService } from '../../shared/ds';
-import type { RadioOption, DropdownOption } from '../../shared/ds';
+import type { RadioOption, DropdownOption, FvdrIconName } from '../../shared/ds';
 
 @Pipe({ name: 'initials', standalone: true })
 export class InitialsPipe implements PipeTransform {
@@ -15,6 +15,16 @@ export class InitialsPipe implements PipeTransform {
 const SLUG = 'project-archive-creation-flow-testing';
 
 type AppView = 'main' | 'order';
+
+interface NavItem {
+  id: string;
+  label: string;
+  icon: FvdrIconName;
+  iconActive: FvdrIconName;
+  active?: boolean;
+  children?: { label: string; active?: boolean }[];
+  open?: boolean;
+}
 
 interface Archive {
   id: number;
@@ -54,30 +64,58 @@ function freshRecipientForm() {
     <div class="shell">
 
       <!-- ── Sidebar ── -->
-      <aside class="sidebar">
-        <div class="sidebar-top">
-          <div class="project-row">
-            <div class="project-logo">PA</div>
-            <span class="project-name">Project Alpha</span>
-            <fvdr-icon name="chevron-down" class="chevron-ic"></fvdr-icon>
+      <nav class="sidebar" [class.sidebar--collapsed]="sidebarCollapsed">
+
+        <!-- Project switcher -->
+        <div class="account-switcher">
+          <div class="account-logo">PA</div>
+          <span class="account-name" *ngIf="!sidebarCollapsed">Project Alpha</span>
+          <fvdr-icon *ngIf="!sidebarCollapsed" name="chevron-down" class="account-chevron"></fvdr-icon>
+        </div>
+
+        <!-- Nav list -->
+        <div class="nav-list">
+          <ng-container *ngFor="let item of navItems">
+            <button class="nav-item"
+                    [class.nav-item--active]="item.active"
+                    [class.nav-item--open]="item.open"
+                    [title]="sidebarCollapsed ? item.label : ''"
+                    (click)="toggleNavItem(item)">
+              <span class="nav-icon-zone">
+                <span class="nav-icon">
+                  <fvdr-icon class="icon-default" [name]="item.icon"></fvdr-icon>
+                  <fvdr-icon class="icon-active" [name]="item.iconActive"></fvdr-icon>
+                </span>
+              </span>
+              <span class="nav-label" *ngIf="!sidebarCollapsed">{{ item.label }}</span>
+              <fvdr-icon *ngIf="!sidebarCollapsed && item.children" name="chevron-down"
+                         class="nav-chevron" [class.nav-chevron--up]="item.open"></fvdr-icon>
+            </button>
+            <div *ngIf="!sidebarCollapsed && item.open && item.children" class="nav-subitems">
+              <button *ngFor="let child of item.children" class="nav-subitem"
+                      [class.nav-subitem--active]="child.active">{{ child.label }}</button>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- Footer: ideals. + collapse -->
+        <div class="sidebar-bottom">
+          <div class="sidebar-logo" *ngIf="!sidebarCollapsed">
+            <svg width="87" height="18" viewBox="0 0 117 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0.381 3.023C0.381 1.676 1.471 0.65 2.85 0.65C4.196 0.65 5.254 1.676 5.254 3.023C5.254 4.402 4.196 5.396 2.85 5.396C1.439 5.396 0.381 4.402 0.381 3.023ZM0.862 22.967V7.255H4.677V22.967H0.862Z" fill="#1F2129"/>
+              <path d="M23.243 1.003V22.999H19.523V20.947C18.369 22.326 16.734 23.384 14.457 23.384C9.936 23.384 6.569 19.825 6.569 15.143C6.569 10.526 9.968 6.935 14.425 6.935C16.669 6.935 18.273 7.961 19.427 9.308V1.003H23.243ZM19.651 15.111C19.651 12.514 17.824 10.334 15.002 10.334C12.213 10.334 10.385 12.514 10.385 15.111C10.385 17.773 12.213 19.921 15.002 19.921C17.792 19.921 19.651 17.773 19.651 15.111Z" fill="#1F2129"/>
+              <path d="M40.974 16.458H28.886C29.367 18.478 30.842 20.081 33.728 20.081C35.523 20.081 37.576 19.408 38.954 18.446L40.461 21.139C38.986 22.23 36.453 23.32 33.567 23.32C27.603 23.32 24.974 19.28 24.974 15.111C24.974 10.43 28.277 6.903 33.215 6.903C37.672 6.903 41.071 9.821 41.071 14.791C41.103 15.432 41.039 15.945 40.974 16.458ZM28.886 13.604H37.351C37.030 11.392 35.395 10.045 33.215 10.045C31.034 10.045 29.399 11.424 28.886 13.604Z" fill="#1F2129"/>
+              <path d="M59.187 7.287V22.967H55.564V21.043C54.377 22.39 52.678 23.352 50.401 23.352C45.816 23.352 42.546 19.696 42.546 15.047C42.546 10.334 45.880 6.903 50.401 6.903C52.678 6.903 54.345 7.929 55.564 9.275V7.287H59.187ZM55.660 15.111C55.660 12.514 53.768 10.334 50.979 10.334C48.189 10.334 46.329 12.514 46.329 15.111C46.329 17.741 48.189 19.921 50.979 19.921C53.736 19.921 55.660 17.741 55.660 15.111Z" fill="#1F2129"/>
+              <path d="M61.592 22.967V1.003H65.376V22.999H61.592V22.967Z" fill="#1F2129"/>
+              <path d="M66.947 20.274L69.095 17.965C70.185 19.376 71.821 20.177 73.360 20.177C74.739 20.177 75.700 19.44 75.700 18.542C75.700 17.869 75.252 17.420 74.514 17.035C73.616 16.586 71.564 15.913 70.570 15.400C68.775 14.534 67.909 13.123 67.909 11.392C67.909 8.698 70.153 6.742 73.680 6.742C75.700 6.742 77.688 7.448 79.131 9.051L77.143 11.456C76.021 10.302 74.674 9.821 73.584 9.821C72.366 9.821 71.660 10.494 71.660 11.296C71.660 11.841 72.013 12.450 73.039 12.835C74.065 13.251 75.604 13.764 76.855 14.406C78.618 15.336 79.548 16.554 79.548 18.414C79.548 21.203 77.143 23.384 73.392 23.384C70.859 23.384 68.454 22.358 66.947 20.274Z" fill="#1F2129"/>
+              <path d="M80.510 21.171C80.510 19.921 81.536 18.959 82.819 18.959C84.037 18.959 85.031 19.921 85.031 21.171C85.031 22.486 84.037 23.416 82.819 23.416C81.536 23.448 80.510 22.486 80.510 21.171Z" fill="#1F2129"/>
+            </svg>
           </div>
-          <nav>
-            <a class="nav-item"><span class="nav-ic"><fvdr-icon name="nav-overview"></fvdr-icon></span><span class="nav-lbl">Dashboard</span></a>
-            <a class="nav-item"><span class="nav-ic"><fvdr-icon name="folder"></fvdr-icon></span><span class="nav-lbl">Documents</span></a>
-            <a class="nav-item"><span class="nav-ic"><fvdr-icon name="participants"></fvdr-icon></span><span class="nav-lbl">Participants</span></a>
-            <a class="nav-item"><span class="nav-ic"><fvdr-icon name="lock-close"></fvdr-icon></span><span class="nav-lbl">Permissions</span></a>
-            <a class="nav-item"><span class="nav-ic"><fvdr-icon name="info"></fvdr-icon></span><span class="nav-lbl">Q&amp;A</span></a>
-            <a class="nav-item"><span class="nav-ic"><fvdr-icon name="reports"></fvdr-icon></span><span class="nav-lbl">Reports</span><fvdr-icon name="chevron-down" class="nav-end-ic"></fvdr-icon></a>
-            <a class="nav-item"><span class="nav-ic"><fvdr-icon name="settings"></fvdr-icon></span><span class="nav-lbl">Settings</span><fvdr-icon name="chevron-down" class="nav-end-ic"></fvdr-icon></a>
-            <a class="nav-item nav-item--active"><span class="nav-ic"><fvdr-icon name="storage"></fvdr-icon></span><span class="nav-lbl nav-lbl--bold">Project archiving</span></a>
-            <a class="nav-item"><span class="nav-ic"><fvdr-icon name="trash"></fvdr-icon></span><span class="nav-lbl">Recycle bin</span></a>
-          </nav>
+          <button class="collapse-btn" (click)="sidebarCollapsed = !sidebarCollapsed">
+            <fvdr-icon [name]="sidebarCollapsed ? 'angle-double-right' : 'angle-double-left'"></fvdr-icon>
+          </button>
         </div>
-        <div class="sidebar-foot">
-          <span class="ideals-logo">ideals.</span>
-          <button class="collapse-btn"><fvdr-icon name="angle-double-left"></fvdr-icon></button>
-        </div>
-      </aside>
+      </nav>
 
       <!-- ── Main ── -->
       <div class="main">
@@ -349,34 +387,78 @@ function freshRecipientForm() {
     .sidebar {
       width: 280px; min-width: 280px; height: 100%;
       background: #f7f7f7; border-right: 1px solid #dee0eb;
-      display: flex; flex-direction: column; justify-content: space-between;
+      display: flex; flex-direction: column; overflow: hidden;
+      transition: width 0.22s ease, min-width 0.22s ease; flex-shrink: 0;
     }
-    .sidebar-top { display: flex; flex-direction: column; gap: 24px; flex: 1; overflow-y: auto; }
-    .project-row { display: flex; align-items: center; gap: 16px; padding: 12px 16px; cursor: pointer; }
-    .project-logo {
-      width: 40px; height: 40px; background: #1a2e4a; border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+    .sidebar--collapsed { width: 72px; min-width: 72px; }
+
+    .account-switcher {
+      height: 64px; min-height: 64px; background: #f7f7f7; border-bottom: 1px solid #dee0eb;
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+      cursor: pointer; overflow: hidden; flex-shrink: 0;
     }
-    .project-name { flex: 1; font-size: 16px; font-weight: 600; color: #1f2129; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .chevron-ic { font-size: 16px; color: #5f616a; flex-shrink: 0; }
-    nav { display: flex; flex-direction: column; }
+    .account-switcher:hover { background: #efefef; }
+    .account-logo {
+      width: 40px; height: 40px; min-width: 40px; border-radius: 4px; flex-shrink: 0;
+      background: #1a2e4a; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: white;
+    }
+    .account-name { flex: 1; font-size: 16px; font-weight: 600; color: #1f2129; white-space: nowrap; overflow: hidden; }
+    .account-chevron { flex-shrink: 0; font-size: 16px; color: #5f616a; }
+
+    .nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 8px 0; }
+
     .nav-item {
-      display: flex; align-items: center; height: 48px; padding-right: 24px;
-      cursor: pointer; text-decoration: none; color: #40424b; transition: background 0.12s;
+      width: 100%; height: 32px; min-height: 32px;
+      border: none; background: transparent; color: #40424b;
+      cursor: pointer; display: flex; align-items: center;
+      font-size: 16px; font-weight: 400; font-family: var(--font-family, 'Open Sans', sans-serif);
+      text-align: left; white-space: nowrap; overflow: hidden;
     }
-    .nav-item:hover { background: #eef0f8; }
-    .nav-ic { width: 72px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 24px; color: #5f616a; }
-    .nav-item--active .nav-ic { color: #1f2129; }
-    .nav-lbl { flex: 1; font-size: 16px; font-weight: 400; color: #40424b; white-space: nowrap; }
-    .nav-lbl--bold { font-weight: 600; color: #1f2129; }
-    .nav-end-ic { font-size: 16px; color: #5f616a; flex-shrink: 0; }
-    .sidebar-foot {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 24px 16px 24px 24px; border-top: 1px solid #dee0eb;
+    .icon-active { display: none; }
+    .nav-item:hover { font-weight: 600; }
+    .nav-item:hover .icon-default { display: none; }
+    .nav-item:hover .icon-active  { display: inline-flex; }
+    .nav-item--active { color: #1f2129; font-weight: 600; }
+    .nav-item--open   { color: #1f2129; font-weight: 600; }
+    .nav-item--active .icon-default,
+    .nav-item--open   .icon-default { display: none; }
+    .nav-item--active .icon-active,
+    .nav-item--open   .icon-active  { display: inline-flex; }
+
+    .nav-icon-zone {
+      width: 72px; min-width: 72px; height: 32px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .ideals-logo { font-size: 18px; font-weight: 800; color: #1f2129; font-style: italic; }
-    .collapse-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; font-size: 16px; color: #5f616a; }
+    .nav-icon { display: flex; align-items: center; justify-content: center; color: #5f616a; font-size: 24px; }
+    .nav-label { flex: 1; }
+    .nav-chevron { flex-shrink: 0; margin-right: 16px; transition: transform 0.2s; font-size: 16px; color: #5f616a; }
+    .nav-chevron--up { transform: rotate(180deg); }
+
+    .nav-subitems { display: flex; flex-direction: column; }
+    .nav-subitem {
+      height: 32px; padding: 0 16px 0 72px;
+      border: none; background: transparent; cursor: pointer;
+      font-size: 14px; font-weight: 400; color: #1f2129;
+      font-family: var(--font-family, 'Open Sans', sans-serif);
+      text-align: left; white-space: nowrap;
+    }
+    .nav-subitem:hover { font-weight: 600; }
+    .nav-subitem--active { font-weight: 600; color: #2c9c74; }
+
+    .sidebar-bottom {
+      height: 72px; min-height: 72px; background: #f7f7f7; border-top: 1px solid #dee0eb;
+      display: flex; align-items: center; padding: 0 16px 0 24px;
+      justify-content: space-between; overflow: hidden; flex-shrink: 0;
+    }
+    .sidebar-logo { display: flex; align-items: center; overflow: hidden; }
+    .collapse-btn {
+      width: 32px; height: 32px; min-width: 32px;
+      border: none; background: transparent; cursor: pointer; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: #5f616a; margin-left: auto;
+    }
+    .collapse-btn:hover { background: #e8e8e8; }
 
     /* ── Main ── */
     .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -561,6 +643,28 @@ export class ProjectArchiveCreationFlowTestingComponent implements OnInit, OnDes
   private toast = inject(ToastService);
 
   view: AppView = 'main';
+
+  // Sidebar
+  sidebarCollapsed = false;
+  navItems: NavItem[] = [
+    { id: 'dashboard',    label: 'Dashboard',         icon: 'nav-overview',     iconActive: 'nav-overview-active' },
+    { id: 'documents',    label: 'Documents',          icon: 'folder',           iconActive: 'folder' },
+    { id: 'participants', label: 'Participants',        icon: 'nav-participants', iconActive: 'nav-participants-active' },
+    { id: 'permissions',  label: 'Permissions',         icon: 'lock-close',       iconActive: 'lock-close' },
+    { id: 'qa',           label: 'Q&A',                icon: 'info',             iconActive: 'info' },
+    { id: 'reports',      label: 'Reports',             icon: 'nav-reports',      iconActive: 'nav-reports-active',
+      children: [{ label: 'Activity log' }, { label: 'Documents overview' }] },
+    { id: 'settings',     label: 'Settings',            icon: 'nav-settings',     iconActive: 'nav-settings-active',
+      children: [{ label: 'General' }, { label: 'Integrations' }] },
+    { id: 'archiving',    label: 'Project archiving',   icon: 'storage',          iconActive: 'storage', active: true },
+    { id: 'recycle',      label: 'Recycle bin',         icon: 'trash',            iconActive: 'trash' },
+  ];
+
+  toggleNavItem(item: NavItem): void {
+    if (item.children) { item.open = !item.open; return; }
+    this.navItems.forEach(n => n.active = false);
+    item.active = true;
+  }
 
   // Archives
   archives: Archive[] = [];

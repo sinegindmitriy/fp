@@ -20,3 +20,79 @@ git push gitlab merge-to-main:main
 ```
 
 - Токен зберігається в remote `gitlab` (glpat)
+
+## Shell layout pattern (sidebar + header)
+
+Референс: `src/app/prototypes/ca-settings-integrations/ca-settings-integrations.component.ts`
+
+Ключові розміри:
+- Sidebar: `280px` (expanded) / `72px` (collapsed), transition `width 0.22s ease`
+- Nav item: `height: 32px`, icon-zone `72px` wide, icon `24px`
+- Header: `64px`
+- Sidebar footer: `72px`
+
+**FVDR sidebar** (відрізняється від CA):
+- Active/hover state: **без background** — тільки bold text + перемикання іконки
+- `icon-default` прихований при hover/active, `icon-active` показується
+- Sub-items: 32px, padding-left 72px, без іконки; active = `color: #2c9c74`
+
+CSS-класи: `.shell`, `.sidebar`, `.sidebar--collapsed`, `.account-switcher`, `.nav-list`, `.nav-item`, `.nav-item--active`, `.nav-item--open`, `.icon-default`, `.icon-active`, `.nav-icon-zone`, `.nav-subitems`, `.nav-subitem`, `.sidebar-bottom`, `.collapse-btn`
+
+## DS Components — key APIs
+
+Імпорт: `import { DS_COMPONENTS } from '../../shared/ds'` → `imports: [...DS_COMPONENTS]`
+
+```
+<fvdr-btn>             label, size (s/m/l), variant (primary/ghost/danger), disabled, (clicked)
+<fvdr-input>           [(ngModel)], label, placeholder, type, iconLeft, iconRight, state (default/error/success/disabled)
+<fvdr-textarea>        [(ngModel)], label, placeholder, maxLength
+<fvdr-search>          [(ngModel)], placeholder
+<fvdr-radio>           [options]="RadioOption[]", [value], (valueChange), layout (horizontal|vertical)
+<fvdr-toggle>          [(checked)], label, disabled
+<fvdr-dropdown>        [options]="DropdownOption[]", [value], (valueChange)→string|string[], searchable, multi, size
+<fvdr-droplist>        [items]="DroplistItem[]", [value], (valueChange)
+<fvdr-phone-input>     [(ngModel)]
+<fvdr-datepicker>      [(ngModel)]
+<fvdr-timepicker>      [(ngModel)]
+<fvdr-calendar>        [(ngModel)]
+<fvdr-segment>         [items]="SegmentItem[]", [(value)]
+<fvdr-chip>            label, variant, removable, (removed)
+<fvdr-avatar>          initials, size (sm/md/lg), color, textColor, imgSrc
+<fvdr-badge>           label, variant
+<fvdr-counter>         [value], variant, size
+<fvdr-status>          label, variant
+<fvdr-inline-message>  message, variant (info/success/warning/error)
+<fvdr-info-banner>     message, variant, dismissible
+<fvdr-modal>           visible, title, confirmLabel, cancelLabel, size (s/m/l/xl), confirmVariant, closeOnOverlay, (confirmed), (cancelled), (closed)
+<fvdr-bottom-sheet>    visible, title, confirmLabel, cancelLabel, (confirmed), (cancelled)
+<fvdr-number-stepper>  [(ngModel)], min, max
+<fvdr-progress>        [value] (0–100)
+<fvdr-range>           [(ngModel)], min, max
+<fvdr-table>           [columns]="TableColumn[]", [rows], [sortable]
+<fvdr-tree>            [nodes]="TreeNode[]"
+<fvdr-drop-area>       (filesDropped)
+<fvdr-icon>            [name]="FvdrIconName" — розмір через font-size CSS, колір через color CSS
+ToastService           inject(ToastService).show({ variant: 'success'|'error'|'warning'|'info', message, title?, duration? })
+```
+
+Важливо: `valueChange` у `<fvdr-dropdown>` емітить `string | string[]`.
+Хелпер: `asString(v: string | string[]): string { return Array.isArray(v) ? v[0] : v; }`
+
+## Icons — повний список FvdrIconName
+
+```
+Standard: angle-double-left, angle-double-right, api, attention, bell, billing, cancel, check,
+  chevron-down, chevron-left, chevron-right, chevron-up, close, download, drag, edit, error,
+  filter, finished, folder, info, link, lock-close, lock-open, minus, more, move, overview,
+  participants, plus, reports, search, settings, share, sort, spinner, storage, trash, upload, warning
+
+Extended: calendar, clock, help, theme-dark, theme-light
+
+Nav (з active-варіантом): nav-api, nav-api-active, nav-billing, nav-billing-active,
+  nav-overview, nav-overview-active, nav-participants, nav-participants-active,
+  nav-projects, nav-projects-active, nav-reports, nav-reports-active,
+  nav-settings, nav-settings-active
+```
+
+Файл: `src/app/shared/ds/icons/icons.ts` (тип `FvdrIconName`)
+Figma: "FVDR - Design System" → Icons (file `liyNDiFf1piO8SQmHNKoeU`, node `15846-7469`)
