@@ -81,6 +81,7 @@ function freshRecipientForm() {
             <button class="nav-item"
                     [class.nav-item--active]="item.active"
                     [class.nav-item--open]="item.open"
+                    [class.nav-item--has-chevron]="item.children && !sidebarCollapsed"
                     [title]="sidebarCollapsed ? item.label : ''"
                     (click)="toggleNavItem(item)">
               <span class="nav-icon-zone">
@@ -428,7 +429,7 @@ function freshRecipientForm() {
     .account-name { font-size: 16px; font-weight: 600; color: #1f2129; white-space: nowrap; overflow: hidden; }
     .account-chevron { flex-shrink: 0; font-size: 16px; color: #5f616a; }
 
-    .nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 24px 0 8px; gap: 0; }
+    .nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 24px 0 8px; gap: 24px; }
     .nav-group { display: flex; flex-direction: column; }
 
     .nav-item {
@@ -437,7 +438,9 @@ function freshRecipientForm() {
       cursor: pointer; display: flex; align-items: center;
       font-size: 16px; font-weight: 400; font-family: var(--font-family, 'Open Sans', sans-serif);
       text-align: left; white-space: nowrap; overflow: hidden;
+      padding-right: 24px;
     }
+    .nav-item--has-chevron { padding-right: 0; }
     .icon-active { display: none; }
     .nav-item:hover { font-weight: 600; }
     .nav-item:hover .icon-default { display: none; }
