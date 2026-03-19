@@ -144,7 +144,7 @@ function freshRecipientForm() {
             <div class="sec-hdr">
               <h2 class="sec-title">USB drive</h2>
               <button class="action-btn action-btn--green" data-track="place-order" (click)="goToOrder()">
-                <fvdr-icon name="storage"></fvdr-icon> Place order
+                <fvdr-icon name="flash-drive"></fvdr-icon> Place order
               </button>
             </div>
             <ul class="bullet-list">
@@ -177,7 +177,7 @@ function freshRecipientForm() {
                 <!-- Archive cards -->
                 <div class="arch-card" *ngFor="let arch of archives">
                   <div class="arch-card__icon-wrap">
-                    <fvdr-icon name="storage" class="arch-card__icon"></fvdr-icon>
+                    <fvdr-icon name="nav-archiving" class="arch-card__icon"></fvdr-icon>
                   </div>
                   <div class="arch-card__body">
                     <div class="arch-card__title">{{ arch.name }}</div>
