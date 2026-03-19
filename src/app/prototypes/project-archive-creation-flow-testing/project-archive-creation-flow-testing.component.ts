@@ -24,6 +24,7 @@ interface NavItem {
   active?: boolean;
   children?: { label: string; active?: boolean }[];
   open?: boolean;
+  dividerBefore?: boolean;
 }
 
 interface Archive {
@@ -78,6 +79,7 @@ function freshRecipientForm() {
         <!-- Nav list -->
         <div class="nav-list">
           <div class="nav-group" *ngFor="let item of navItems">
+            <div *ngIf="item.dividerBefore" class="nav-divider"></div>
             <button class="nav-item"
                     [class.nav-item--active]="item.active"
                     [class.nav-item--open]="item.open"
@@ -124,13 +126,19 @@ function freshRecipientForm() {
 
         <!-- Header -->
         <header class="top-bar">
-          <div class="breadcrumb">
-            <span [class.bc-link]="view === 'order'" (click)="view === 'order' && cancelOrder()">Project archiving</span>
-            <ng-container *ngIf="view === 'order'">
-              <fvdr-icon name="chevron-right" class="bc-sep"></fvdr-icon>
-              <span>Place order</span>
-            </ng-container>
-          </div>
+          <nav class="breadcrumb" aria-label="breadcrumb">
+            <button class="bc-item"
+                    [class.bc-item--link]="view === 'order'"
+                    [class.bc-item--current]="view === 'main'"
+                    [disabled]="view === 'main'"
+                    (click)="view === 'order' && cancelOrder()">
+              Project archiving
+              <fvdr-icon *ngIf="view === 'order'" name="chevron-right" class="bc-chevron bc-chevron--dim"></fvdr-icon>
+            </button>
+            <button *ngIf="view === 'order'" class="bc-item bc-item--current">
+              Place order
+            </button>
+          </nav>
           <div class="hdr-actions">
             <button class="ic-btn"><fvdr-icon name="theme-dark"></fvdr-icon></button>
             <button class="ic-btn"><fvdr-icon name="help"></fvdr-icon></button>
@@ -422,8 +430,9 @@ function freshRecipientForm() {
     .account-name { font-size: 16px; font-weight: 600; color: #1f2129; white-space: nowrap; overflow: hidden; }
     .account-chevron { flex-shrink: 0; font-size: 16px; color: #5f616a; }
 
-    .nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 24px 0 0; gap: 24px; }
+    .nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 24px 0 8px; gap: 0; }
     .nav-group { display: flex; flex-direction: column; }
+    .nav-divider { height: 1px; background: #dee0eb; margin: 16px 0; }
 
     .nav-item {
       width: 100%; height: 32px; min-height: 32px;
@@ -485,10 +494,18 @@ function freshRecipientForm() {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 24px; flex-shrink: 0;
     }
-    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 600; color: #1f2129; }
-    .bc-link { color: #5f616a; cursor: pointer; }
-    .bc-link:hover { color: #1f2129; }
-    .bc-sep { font-size: 14px; color: #5f616a; }
+    .breadcrumb { display: flex; align-items: center; gap: 0; }
+    .bc-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 8px; background: none; border: none; cursor: pointer;
+      font-family: var(--font-family, 'Open Sans', sans-serif);
+      font-size: 15px; font-weight: 600; line-height: 20px;
+    }
+    .bc-item--link { color: #5f616a; }
+    .bc-item--link:hover { color: #2c9c74; }
+    .bc-item--current { color: #1f2129; cursor: default; }
+    .bc-chevron { font-size: 16px; }
+    .bc-chevron--dim { color: #bbbdc8; }
     .hdr-actions { display: flex; align-items: center; gap: 24px; }
     .ic-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; font-size: 20px; color: #5f616a; transition: color 0.12s; }
     .ic-btn:hover { color: #1f2129; }
@@ -692,10 +709,10 @@ export class ProjectArchiveCreationFlowTestingComponent implements OnInit, OnDes
     { id: 'permissions',  label: 'Permissions',         icon: 'nav-permissions',   iconActive: 'nav-permissions-active' },
     { id: 'qa',           label: 'Q&A',                icon: 'nav-qa',            iconActive: 'nav-qa-active' },
     { id: 'reports',      label: 'Reports',             icon: 'nav-reports',       iconActive: 'nav-reports-active',
-      children: [{ label: 'Activity log' }, { label: 'Documents overview' }] },
+      dividerBefore: true, children: [{ label: 'Activity log' }, { label: 'Documents overview' }] },
     { id: 'settings',     label: 'Settings',            icon: 'nav-settings',      iconActive: 'nav-settings-active',
       children: [{ label: 'General' }, { label: 'Integrations' }] },
-    { id: 'archiving',    label: 'Project archiving',   icon: 'nav-archiving',     iconActive: 'nav-archiving-active', active: true },
+    { id: 'archiving',    label: 'Project archiving',   icon: 'nav-archiving',     iconActive: 'nav-archiving-active', active: true, dividerBefore: true },
     { id: 'recycle',      label: 'Recycle bin',         icon: 'nav-recycle',       iconActive: 'nav-recycle-active' },
   ];
 

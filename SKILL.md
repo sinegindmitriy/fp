@@ -36,11 +36,13 @@
 
 | Застосування | Розмір | Вага |
 |--------------|--------|------|
-| Nav item default | 14px | 400 |
-| Nav item hover/active | 14px | 600 |
+| Nav item default | 16px | 400 |
+| Nav item hover/active | 16px | 600 |
 | Sub-item default | 14px | 400 |
 | Sub-item active | 14px | 600 |
-| Account name | 14px | 400 |
+| Account name | 16px | 600 |
+| Breadcrumb link | 15px | 600 |
+| Breadcrumb current | 15px | 600 |
 
 ---
 
@@ -136,10 +138,10 @@ navItems: NavItem[] = [
   { id: 'permissions',  label: 'Permissions',        icon: 'nav-permissions',  iconActive: 'nav-permissions-active' },
   { id: 'qa',           label: 'Q&A',               icon: 'nav-qa',           iconActive: 'nav-qa-active' },
   { id: 'reports',      label: 'Reports',            icon: 'nav-reports',      iconActive: 'nav-reports-active',
-    children: [{ label: 'Activity log' }, { label: 'Documents overview' }] },
+    dividerBefore: true, children: [{ label: 'Activity log' }, { label: 'Documents overview' }] },
   { id: 'settings',     label: 'Settings',           icon: 'nav-settings',     iconActive: 'nav-settings-active',
     children: [{ label: 'General' }, { label: 'Integrations' }] },
-  { id: 'archiving',    label: 'Project archiving',  icon: 'nav-archiving',    iconActive: 'nav-archiving-active' },
+  { id: 'archiving',    label: 'Project archiving',  icon: 'nav-archiving',    iconActive: 'nav-archiving-active', dividerBefore: true },
   { id: 'recycle',      label: 'Recycle bin',        icon: 'nav-recycle',      iconActive: 'nav-recycle-active' },
 ];
 ```
@@ -195,8 +197,9 @@ navItems: NavItem[] = [
 .account-name { font-size: 14px; font-weight: 600; color: #1f2129; white-space: nowrap; }
 .account-chevron { flex-shrink: 0; font-size: 16px; color: #5f616a; }
 
-.nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 24px 0 0; gap: 24px; }
+.nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 24px 0 8px; gap: 0; }
 .nav-group { display: flex; flex-direction: column; }
+.nav-divider { height: 1px; background: #dee0eb; margin: 16px 0; }
 
 .nav-item {
   width: 100%; height: 32px; min-height: 32px;
@@ -247,6 +250,42 @@ navItems: NavItem[] = [
   font-size: 16px; color: #5f616a; margin-left: auto;
 }
 .collapse-btn:hover { background: #e8e8e8; }
+```
+
+---
+
+## Organisms
+
+### Breadcrumb (Header)
+
+**Референс:** `ca-settings-integrations.component.ts`
+
+```html
+<nav class="breadcrumb" aria-label="breadcrumb">
+  <!-- Parent: clickable, gray, chevron-right всередині -->
+  <button class="bc-item bc-item--link" (click)="goBack()">
+    Parent page
+    <fvdr-icon name="chevron-right" class="bc-chevron bc-chevron--dim"></fvdr-icon>
+  </button>
+  <!-- Current page: dark, не clickable -->
+  <button class="bc-item bc-item--current" disabled>
+    Current page
+  </button>
+</nav>
+```
+
+```css
+.breadcrumb { display: flex; align-items: center; gap: 0; }
+.bc-item {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 8px; background: none; border: none; cursor: pointer;
+  font-family: var(--font-family); font-size: 15px; font-weight: 600; line-height: 20px;
+}
+.bc-item--link { color: #5f616a; }
+.bc-item--link:hover { color: #2c9c74; }   /* ← green hover! */
+.bc-item--current { color: #1f2129; cursor: default; }
+.bc-chevron { font-size: 16px; }
+.bc-chevron--dim { color: #bbbdc8; }        /* ← dimmed separator */
 ```
 
 ---
