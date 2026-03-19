@@ -138,10 +138,10 @@ navItems: NavItem[] = [
   { id: 'permissions',  label: 'Permissions',        icon: 'nav-permissions',  iconActive: 'nav-permissions-active' },
   { id: 'qa',           label: 'Q&A',               icon: 'nav-qa',           iconActive: 'nav-qa-active' },
   { id: 'reports',      label: 'Reports',            icon: 'nav-reports',      iconActive: 'nav-reports-active',
-    dividerBefore: true, children: [{ label: 'Activity log' }, { label: 'Documents overview' }] },
+    children: [{ label: 'Activity log' }, { label: 'Documents overview' }] },
   { id: 'settings',     label: 'Settings',           icon: 'nav-settings',     iconActive: 'nav-settings-active',
     children: [{ label: 'General' }, { label: 'Integrations' }] },
-  { id: 'archiving',    label: 'Project archiving',  icon: 'nav-archiving',    iconActive: 'nav-archiving-active', dividerBefore: true },
+  { id: 'archiving',    label: 'Project archiving',  icon: 'nav-archiving',    iconActive: 'nav-archiving-active' },
   { id: 'recycle',      label: 'Recycle bin',        icon: 'nav-recycle',      iconActive: 'nav-recycle-active' },
 ];
 ```
@@ -199,7 +199,6 @@ navItems: NavItem[] = [
 
 .nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 24px 0 8px; gap: 0; }
 .nav-group { display: flex; flex-direction: column; }
-.nav-divider { height: 1px; background: #dee0eb; margin: 16px 0; }
 
 .nav-item {
   width: 100%; height: 32px; min-height: 32px;
