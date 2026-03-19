@@ -686,17 +686,17 @@ export class ProjectArchiveCreationFlowTestingComponent implements OnInit, OnDes
   // Sidebar
   sidebarCollapsed = false;
   navItems: NavItem[] = [
-    { id: 'dashboard',    label: 'Dashboard',         icon: 'nav-overview',     iconActive: 'nav-overview-active' },
-    { id: 'documents',    label: 'Documents',          icon: 'folder',           iconActive: 'folder' },
-    { id: 'participants', label: 'Participants',        icon: 'nav-participants', iconActive: 'nav-participants-active' },
-    { id: 'permissions',  label: 'Permissions',         icon: 'lock-close',       iconActive: 'lock-close' },
-    { id: 'qa',           label: 'Q&A',                icon: 'info',             iconActive: 'info' },
-    { id: 'reports',      label: 'Reports',             icon: 'nav-reports',      iconActive: 'nav-reports-active',
+    { id: 'dashboard',    label: 'Dashboard',         icon: 'nav-overview',      iconActive: 'nav-overview-active' },
+    { id: 'documents',    label: 'Documents',          icon: 'nav-documents',     iconActive: 'nav-documents-active' },
+    { id: 'participants', label: 'Participants',        icon: 'nav-participants',  iconActive: 'nav-participants-active' },
+    { id: 'permissions',  label: 'Permissions',         icon: 'nav-permissions',   iconActive: 'nav-permissions-active' },
+    { id: 'qa',           label: 'Q&A',                icon: 'nav-qa',            iconActive: 'nav-qa-active' },
+    { id: 'reports',      label: 'Reports',             icon: 'nav-reports',       iconActive: 'nav-reports-active',
       children: [{ label: 'Activity log' }, { label: 'Documents overview' }] },
-    { id: 'settings',     label: 'Settings',            icon: 'nav-settings',     iconActive: 'nav-settings-active',
+    { id: 'settings',     label: 'Settings',            icon: 'nav-settings',      iconActive: 'nav-settings-active',
       children: [{ label: 'General' }, { label: 'Integrations' }] },
-    { id: 'archiving',    label: 'Project archiving',   icon: 'storage',          iconActive: 'storage', active: true },
-    { id: 'recycle',      label: 'Recycle bin',         icon: 'trash',            iconActive: 'trash' },
+    { id: 'archiving',    label: 'Project archiving',   icon: 'nav-archiving',     iconActive: 'nav-archiving-active', active: true },
+    { id: 'recycle',      label: 'Recycle bin',         icon: 'nav-recycle',       iconActive: 'nav-recycle-active' },
   ];
 
   toggleNavItem(item: NavItem): void {
