@@ -68,14 +68,16 @@ function freshRecipientForm() {
 
         <!-- Project switcher -->
         <div class="account-switcher">
-          <div class="account-logo">PA</div>
-          <span class="account-name" *ngIf="!sidebarCollapsed">Project Alpha</span>
+          <div class="account-switcher-left">
+            <div class="account-logo">PA</div>
+            <span class="account-name" *ngIf="!sidebarCollapsed">Project Alpha</span>
+          </div>
           <fvdr-icon *ngIf="!sidebarCollapsed" name="chevron-down" class="account-chevron"></fvdr-icon>
         </div>
 
         <!-- Nav list -->
         <div class="nav-list">
-          <ng-container *ngFor="let item of navItems">
+          <div class="nav-group" *ngFor="let item of navItems">
             <button class="nav-item"
                     [class.nav-item--active]="item.active"
                     [class.nav-item--open]="item.open"
@@ -95,7 +97,7 @@ function freshRecipientForm() {
               <button *ngFor="let child of item.children" class="nav-subitem"
                       [class.nav-subitem--active]="child.active">{{ child.label }}</button>
             </div>
-          </ng-container>
+          </div>
         </div>
 
         <!-- Footer: ideals. + collapse -->
@@ -170,165 +172,178 @@ function freshRecipientForm() {
             <!-- Archives column -->
             <div class="col">
               <div class="col-hdr">Archives</div>
+              <div class="col-body">
 
-              <!-- Archive cards -->
-              <div class="arch-card" *ngFor="let arch of archives">
-                <div class="arch-card__icon"><fvdr-icon name="storage"></fvdr-icon></div>
-                <div class="arch-card__body">
-                  <strong>{{ arch.name }}</strong>
-                  <span><b>Documents:</b> {{ docLabel(arch.documents) }}</span>
-                  <span><b>Recycle bin:</b> {{ arch.includeRecycleBin ? 'Include' : 'Exclude' }}</span>
-                  <span><b>Reports:</b> {{ reportsLabel(arch.reports) }}</span>
-                  <span><b>Q&amp;A contents:</b> {{ arch.includeQA ? 'Include' : 'Exclude' }}</span>
+                <!-- Archive cards -->
+                <div class="arch-card" *ngFor="let arch of archives">
+                  <div class="arch-card__icon-wrap">
+                    <fvdr-icon name="storage" class="arch-card__icon"></fvdr-icon>
+                  </div>
+                  <div class="arch-card__body">
+                    <div class="arch-card__title">{{ arch.name }}</div>
+                    <div class="arch-card__rows">
+                      <div class="arch-card__row"><b>Documents:</b> {{ docLabel(arch.documents) }}</div>
+                      <div class="arch-card__row"><b>Recycle bin:</b> {{ arch.includeRecycleBin ? 'Include' : 'Exclude' }}</div>
+                      <div class="arch-card__row"><b>Reports:</b> {{ reportsLabel(arch.reports) }}</div>
+                      <div class="arch-card__row"><b>Q&amp;A contents:</b> {{ arch.includeQA ? 'Include' : 'Exclude' }}</div>
+                    </div>
+                  </div>
+                  <div class="arch-card__actions">
+                    <button class="card-ic-btn" (click)="deleteArchive(arch.id)" title="Delete"><fvdr-icon name="trash"></fvdr-icon></button>
+                    <button class="card-ic-btn" (click)="duplicateArchive(arch)" title="Duplicate"><fvdr-icon name="move"></fvdr-icon></button>
+                    <button class="card-ic-btn" (click)="editArchive(arch)" title="Edit"><fvdr-icon name="edit"></fvdr-icon></button>
+                  </div>
                 </div>
-                <div class="arch-card__actions">
-                  <button class="card-ic-btn" (click)="deleteArchive(arch.id)" title="Delete"><fvdr-icon name="trash"></fvdr-icon></button>
-                  <button class="card-ic-btn" (click)="duplicateArchive(arch)" title="Duplicate"><fvdr-icon name="move"></fvdr-icon></button>
-                  <button class="card-ic-btn" (click)="editArchive(arch)" title="Edit"><fvdr-icon name="edit"></fvdr-icon></button>
+
+                <!-- Archive form -->
+                <div class="arch-form" *ngIf="archiveFormOpen">
+                  <div class="arch-form__title">{{ editingArchiveId !== null ? archiveForm.name : ('Archive ' + (archives.length + 1)) }}</div>
+
+                  <div class="field">
+                    <label class="field-lbl">Name</label>
+                    <fvdr-input [(ngModel)]="archiveForm.name" [placeholder]="'Archive ' + (archives.length + 1)"></fvdr-input>
+                  </div>
+
+                  <div class="field">
+                    <label class="field-lbl">Documents</label>
+                    <fvdr-radio [options]="docOptions" [value]="archiveForm.documents" layout="horizontal"
+                                (valueChange)="archiveForm.documents = $event"></fvdr-radio>
+                  </div>
+
+                  <div class="field field--row">
+                    <label class="field-lbl" style="margin-right: 16px; font-size: 15px; font-weight: 600; color: #1f2129;">Include recycle bin</label>
+                    <fvdr-toggle [checked]="archiveForm.includeRecycleBin"
+                                 (checkedChange)="archiveForm.includeRecycleBin = $event"></fvdr-toggle>
+                  </div>
+
+                  <div class="field">
+                    <label class="field-lbl">Reports</label>
+                    <fvdr-dropdown [options]="reportsOptions" [value]="archiveForm.reports"
+                                   (valueChange)="archiveForm.reports = asString($event)"></fvdr-dropdown>
+                    <span class="field-hint">Reports will include only the data and activity related to the selected user group.</span>
+                  </div>
+
+                  <div class="field field--row">
+                    <label class="field-lbl" style="margin-right: 16px; font-size: 15px; font-weight: 600; color: #1f2129;">Include Q&amp;A contents</label>
+                    <fvdr-toggle [checked]="archiveForm.includeQA"
+                                 (checkedChange)="archiveForm.includeQA = $event"></fvdr-toggle>
+                  </div>
+
+                  <div class="arch-form__footer">
+                    <button class="link-btn link-btn--red" (click)="cancelArchiveForm()">
+                      <fvdr-icon name="trash"></fvdr-icon> Delete
+                    </button>
+                    <div class="arch-form__footer-right">
+                      <button class="ghost-btn" (click)="addAndDuplicateArchive()">
+                        <fvdr-icon name="move"></fvdr-icon> Add and duplicate
+                      </button>
+                      <fvdr-btn label="Add" size="m" (clicked)="addArchive()"></fvdr-btn>
+                    </div>
+                  </div>
                 </div>
+
+                <!-- Add archive button -->
+                <button class="add-row-btn" *ngIf="!archiveFormOpen" (click)="openArchiveForm()">
+                  <fvdr-icon name="plus"></fvdr-icon> Archive
+                </button>
+
               </div>
-
-              <!-- Archive form -->
-              <div class="arch-form" *ngIf="archiveFormOpen">
-                <div class="arch-form__title">{{ editingArchiveId !== null ? archiveForm.name : ('Archive ' + (archives.length + 1)) }}</div>
-
-                <div class="field">
-                  <label class="field-lbl">Name</label>
-                  <fvdr-input [(ngModel)]="archiveForm.name" [placeholder]="'Archive ' + (archives.length + 1)"></fvdr-input>
-                </div>
-
-                <div class="field">
-                  <label class="field-lbl">Documents</label>
-                  <fvdr-radio [options]="docOptions" [value]="archiveForm.documents" layout="horizontal"
-                              (valueChange)="archiveForm.documents = $event"></fvdr-radio>
-                </div>
-
-                <div class="field field--row">
-                  <fvdr-toggle [checked]="archiveForm.includeRecycleBin"
-                               (checkedChange)="archiveForm.includeRecycleBin = $event"
-                               label="Include recycle bin"></fvdr-toggle>
-                </div>
-
-                <div class="field">
-                  <label class="field-lbl">Reports</label>
-                  <fvdr-dropdown [options]="reportsOptions" [value]="archiveForm.reports"
-                                 (valueChange)="archiveForm.reports = asString($event)"></fvdr-dropdown>
-                  <span class="field-hint">Reports will include only the data and activity related to the selected user group.</span>
-                </div>
-
-                <div class="field field--row">
-                  <fvdr-toggle [checked]="archiveForm.includeQA"
-                               (checkedChange)="archiveForm.includeQA = $event"
-                               label="Include Q&A contents"></fvdr-toggle>
-                </div>
-
-                <div class="arch-form__footer">
-                  <button class="link-btn link-btn--red" (click)="cancelArchiveForm()">
-                    <fvdr-icon name="trash"></fvdr-icon> Delete
-                  </button>
-                  <button class="ghost-btn" (click)="addAndDuplicateArchive()">
-                    <fvdr-icon name="move"></fvdr-icon> Add and duplicate
-                  </button>
-                  <fvdr-btn label="Add" size="s" (clicked)="addArchive()"></fvdr-btn>
-                </div>
-              </div>
-
-              <!-- Add archive button -->
-              <button class="add-row-btn" *ngIf="!archiveFormOpen" (click)="openArchiveForm()">
-                <fvdr-icon name="plus"></fvdr-icon> Archive
-              </button>
             </div>
 
             <!-- Recipients column -->
-            <div class="col">
+            <div class="col col--recipients">
               <div class="col-hdr">Recipients</div>
+              <div class="col-body">
 
-              <!-- Recipient cards -->
-              <div class="recip-card" *ngFor="let r of recipients">
-                <div class="recip-card__top">
-                  <fvdr-avatar initials="{{ r.fullName | initials }}" size="md" color="#eceef9" textColor="#1f2129"></fvdr-avatar>
-                  <div class="recip-card__info">
-                    <strong>{{ r.fullName }}</strong>
-                    <span class="recip-card__sub">Estimated delivery: Sep 20, 2023 to {{ r.country }}</span>
+                <!-- Hint + add row always at top when no form -->
+                <ng-container *ngIf="!recipientFormOpen">
+                  <p class="recip-hint">Add recipient or order USB drive with archive for yourself</p>
+                  <div class="recip-add-row">
+                    <button class="add-row-btn" (click)="openRecipientForm()">
+                      <fvdr-icon name="plus"></fvdr-icon> Recipient
+                    </button>
+                    <button class="link-btn" *ngIf="recipients.length === 0" (click)="iAmRecipient()">I am the recipient</button>
+                  </div>
+                </ng-container>
+
+                <!-- Recipient cards -->
+                <div class="recip-card" *ngFor="let r of recipients">
+                  <div class="recip-card__icon-wrap">
+                    <fvdr-icon name="participants" style="font-size:24px;color:#5f616a"></fvdr-icon>
+                  </div>
+                  <div class="recip-card__body">
+                    <div class="recip-card__info">
+                      <strong>{{ r.fullName }}</strong>
+                      <span class="recip-card__sub"><b>Estimated delivery:</b> Sep 20, 2023 to {{ r.country }}</span>
+                    </div>
+                    <div class="recip-arch-row" *ngFor="let arch of archives">
+                      <span class="recip-arch-name">{{ arch.name }}</span>
+                      <fvdr-icon name="storage" class="usb-ic"></fvdr-icon>
+                      <span class="usb-label">USB drives</span>
+                      <div class="usb-counter">
+                        <button class="usb-btn" (click)="decUsb(r, arch.id)"><fvdr-icon name="chevron-left"></fvdr-icon></button>
+                        <span>{{ r.usbCounts[arch.id] || 1 }}</span>
+                        <button class="usb-btn" (click)="incUsb(r, arch.id)"><fvdr-icon name="chevron-right"></fvdr-icon></button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="recip-arch-row" *ngFor="let arch of archives">
-                  <span class="recip-arch-name">{{ arch.name }}</span>
-                  <fvdr-icon name="storage" class="usb-ic"></fvdr-icon>
-                  <span class="usb-label">USB drives</span>
-                  <div class="usb-counter">
-                    <button class="usb-btn" (click)="decUsb(r, arch.id)"><fvdr-icon name="chevron-left"></fvdr-icon></button>
-                    <span>{{ r.usbCounts[arch.id] || 1 }}</span>
-                    <button class="usb-btn" (click)="incUsb(r, arch.id)"><fvdr-icon name="chevron-right"></fvdr-icon></button>
-                  </div>
-                  <button class="usb-remove" (click)="removeArchiveFromRecipient(r, arch.id)"><fvdr-icon name="close"></fvdr-icon></button>
-                </div>
-              </div>
 
-              <!-- Recipient form -->
-              <div class="recip-form" *ngIf="recipientFormOpen">
-                <div class="field">
-                  <label class="field-lbl">Email</label>
-                  <fvdr-input [(ngModel)]="recipientForm.email" placeholder="Enter email" type="email"></fvdr-input>
-                </div>
-                <div class="field">
-                  <label class="field-lbl">Full name</label>
-                  <fvdr-input [(ngModel)]="recipientForm.fullName" placeholder="Enter full name" iconLeft="participants"></fvdr-input>
-                </div>
-                <div class="field">
-                  <label class="field-lbl">Phone number</label>
-                  <fvdr-phone-input [(ngModel)]="recipientForm.phone"></fvdr-phone-input>
-                </div>
-                <div class="field">
-                  <label class="field-lbl">Company</label>
-                  <fvdr-input [(ngModel)]="recipientForm.company" placeholder="Enter company name"></fvdr-input>
-                </div>
-                <div class="field-row">
-                  <div class="field field--grow">
-                    <label class="field-lbl">Country</label>
-                    <fvdr-dropdown [options]="countryOptions" [value]="recipientForm.country"
-                                   (valueChange)="recipientForm.country = asString($event)"></fvdr-dropdown>
-                    <span class="field-hint">The archive will include only the information available to the selected user group.</span>
+                <!-- Recipient form -->
+                <div class="recip-form" *ngIf="recipientFormOpen">
+                  <div class="field">
+                    <label class="field-lbl">Email</label>
+                    <fvdr-input [(ngModel)]="recipientForm.email" placeholder="Enter email" type="email"></fvdr-input>
                   </div>
                   <div class="field">
-                    <label class="field-lbl">Estimated delivery</label>
-                    <span class="est-date">Sep 20, 2023</span>
-                  </div>
-                </div>
-                <div class="field-row">
-                  <div class="field field--grow">
-                    <label class="field-lbl">City</label>
-                    <fvdr-input [(ngModel)]="recipientForm.city" placeholder="London"></fvdr-input>
+                    <label class="field-lbl">Full name</label>
+                    <fvdr-input [(ngModel)]="recipientForm.fullName" placeholder="Enter full name" iconLeft="participants"></fvdr-input>
                   </div>
                   <div class="field">
-                    <label class="field-lbl">Postal/ZIP code</label>
-                    <fvdr-input [(ngModel)]="recipientForm.postalCode" placeholder="000000"></fvdr-input>
+                    <label class="field-lbl">Phone number</label>
+                    <fvdr-phone-input [(ngModel)]="recipientForm.phone"></fvdr-phone-input>
+                  </div>
+                  <div class="field">
+                    <label class="field-lbl">Company</label>
+                    <fvdr-input [(ngModel)]="recipientForm.company" placeholder="Enter company name"></fvdr-input>
+                  </div>
+                  <div class="field-row">
+                    <div class="field field--grow">
+                      <label class="field-lbl">Country</label>
+                      <fvdr-dropdown [options]="countryOptions" [value]="recipientForm.country"
+                                     (valueChange)="recipientForm.country = asString($event)"></fvdr-dropdown>
+                      <span class="field-hint">The archive will include only the information available to the selected user group.</span>
+                    </div>
+                    <div class="field">
+                      <label class="field-lbl">Estimated delivery</label>
+                      <span class="est-date">Sep 20, 2023</span>
+                    </div>
+                  </div>
+                  <div class="field-row">
+                    <div class="field field--grow">
+                      <label class="field-lbl">City</label>
+                      <fvdr-input [(ngModel)]="recipientForm.city" placeholder="London"></fvdr-input>
+                    </div>
+                    <div class="field">
+                      <label class="field-lbl">Postal/ZIP code</label>
+                      <fvdr-input [(ngModel)]="recipientForm.postalCode" placeholder="000000"></fvdr-input>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="field-lbl">Address</label>
+                    <fvdr-input [(ngModel)]="recipientForm.address" placeholder="Street, building, unit, suite, apartment, floor, etc."></fvdr-input>
+                    <span class="field-hint">Indicate a physical address, not a PO box, as the recipient must sign for the package</span>
+                  </div>
+
+                  <div class="recip-form__footer">
+                    <button class="link-btn link-btn--red" (click)="cancelRecipientForm()">
+                      <fvdr-icon name="trash"></fvdr-icon> Delete
+                    </button>
+                    <fvdr-btn label="Add" size="m" (clicked)="addRecipient()"></fvdr-btn>
                   </div>
                 </div>
-                <div class="field">
-                  <label class="field-lbl">Address</label>
-                  <fvdr-input [(ngModel)]="recipientForm.address" placeholder="Street, building, unit, suite, apartment, floor, etc."></fvdr-input>
-                  <span class="field-hint">Indicate a physical address, not a PO box, as the recipient must sign for the package</span>
-                </div>
 
-                <div class="recip-form__footer">
-                  <button class="link-btn link-btn--red" (click)="cancelRecipientForm()">
-                    <fvdr-icon name="trash"></fvdr-icon> Delete
-                  </button>
-                  <fvdr-btn label="Add" size="s" (clicked)="addRecipient()"></fvdr-btn>
-                </div>
               </div>
-
-              <!-- Add recipient buttons -->
-              <div class="recip-add-row" *ngIf="!recipientFormOpen">
-                <button class="add-row-btn" (click)="openRecipientForm()">
-                  <fvdr-icon name="plus"></fvdr-icon> Recipient
-                </button>
-                <button class="link-btn" *ngIf="recipients.length === 0" (click)="iAmRecipient()">I am the recipient</button>
-              </div>
-              <p class="recip-empty-hint" *ngIf="recipients.length === 0 && !recipientFormOpen">
-                Add recipient or order USB drive with archive for yourself
-              </p>
             </div>
 
           </div>
@@ -393,20 +408,22 @@ function freshRecipientForm() {
     .sidebar--collapsed { width: 72px; min-width: 72px; }
 
     .account-switcher {
-      height: 64px; min-height: 64px; background: #f7f7f7; border-bottom: 1px solid #dee0eb;
-      display: flex; align-items: center; padding: 0 16px; gap: 10px;
-      cursor: pointer; overflow: hidden; flex-shrink: 0;
+      min-height: 64px; background: #f7f7f7;
+      display: flex; align-items: center; padding: 12px 16px; gap: 16px;
+      cursor: pointer; overflow: hidden; flex-shrink: 0; justify-content: space-between;
     }
     .account-switcher:hover { background: #efefef; }
+    .account-switcher-left { display: flex; align-items: center; gap: 16px; }
     .account-logo {
       width: 40px; height: 40px; min-width: 40px; border-radius: 4px; flex-shrink: 0;
-      background: #1a2e4a; display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; color: white;
+      background: #f4640c; display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 400; color: white;
     }
-    .account-name { flex: 1; font-size: 16px; font-weight: 600; color: #1f2129; white-space: nowrap; overflow: hidden; }
+    .account-name { font-size: 16px; font-weight: 600; color: #1f2129; white-space: nowrap; overflow: hidden; }
     .account-chevron { flex-shrink: 0; font-size: 16px; color: #5f616a; }
 
-    .nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 8px 0; }
+    .nav-list { display: flex; flex-direction: column; flex: 1; overflow-y: auto; padding: 24px 0 0; gap: 24px; }
+    .nav-group { display: flex; flex-direction: column; }
 
     .nav-item {
       width: 100%; height: 32px; min-height: 32px;
@@ -469,8 +486,8 @@ function freshRecipientForm() {
       padding: 0 24px; flex-shrink: 0;
     }
     .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 600; color: #1f2129; }
-    .bc-link { color: #358CEB; cursor: pointer; }
-    .bc-link:hover { text-decoration: underline; }
+    .bc-link { color: #5f616a; cursor: pointer; }
+    .bc-link:hover { color: #1f2129; }
     .bc-sep { font-size: 14px; color: #5f616a; }
     .hdr-actions { display: flex; align-items: center; gap: 24px; }
     .ic-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; font-size: 20px; color: #5f616a; transition: color 0.12s; }
@@ -496,47 +513,68 @@ function freshRecipientForm() {
 
     /* ── Order view ── */
     .order-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-    .order-cols { flex: 1; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #dee0eb; overflow-y: auto; }
-    .col { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-right: 1px solid #dee0eb; }
-    .col:last-child { border-right: none; }
-    .col-hdr { font-size: 15px; font-weight: 600; color: #1f2129; padding-bottom: 8px; border-bottom: 1px solid #dee0eb; }
+    .order-cols { flex: 1; display: flex; gap: 32px; padding: 24px; border-bottom: 1px solid #dee0eb; overflow-y: auto; }
+    .col { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+    .col--recipients { flex: 0 0 544px; width: 544px; }
+    .col-hdr {
+      background: #f7f7f7; height: 48px; min-height: 48px;
+      display: flex; align-items: center; padding: 0 16px;
+      font-size: 14px; font-weight: 600; color: #1f2129;
+      border-radius: 4px 4px 0 0;
+    }
+    .col-body { display: flex; flex-direction: column; gap: 16px; padding: 16px 0; flex: 1; overflow-y: auto; }
 
     /* Archive card */
     .arch-card {
-      display: flex; align-items: flex-start; gap: 12px;
-      border: 1px solid #dee0eb; border-radius: 8px; padding: 14px;
-      position: relative; transition: background 0.12s;
+      display: flex; align-items: stretch;
+      border: 1px solid #dee0eb; border-radius: 4px; overflow: hidden;
+      position: relative; transition: background 0.12s; background: white;
     }
-    .arch-card:hover { background: #f7f7f7; }
     .arch-card:hover .arch-card__actions { opacity: 1; }
-    .arch-card__icon { font-size: 24px; color: #5f616a; flex-shrink: 0; margin-top: 2px; }
-    .arch-card__body { flex: 1; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: #1f2129; }
-    .arch-card__body strong { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-    .arch-card__body b { font-weight: 600; }
+    .arch-card__icon-wrap {
+      background: #f7f7f7; display: flex; align-items: center; justify-content: center;
+      padding: 8px; flex-shrink: 0; width: 56px;
+    }
+    .arch-card__icon { font-size: 24px; color: #5f616a; }
+    .arch-card__body {
+      flex: 1; display: flex; flex-direction: column; gap: 8px;
+      padding: 16px 16px 16px 16px;
+    }
+    .arch-card__title { font-size: 18px; font-weight: 600; color: #1f2129; line-height: 24px; }
+    .arch-card__rows { display: flex; flex-direction: column; gap: 8px; }
+    .arch-card__row { display: flex; gap: 8px; font-size: 14px; color: #1f2129; line-height: 20px; }
+    .arch-card__row b { font-weight: 600; white-space: nowrap; }
     .arch-card__actions {
       display: flex; gap: 4px; opacity: 0; transition: opacity 0.12s;
-      position: absolute; top: 10px; right: 10px;
+      position: absolute; top: 8px; right: 8px;
     }
     .card-ic-btn { background: none; border: none; cursor: pointer; padding: 4px; font-size: 16px; color: #5f616a; border-radius: 4px; transition: color 0.12s, background 0.12s; display: flex; }
     .card-ic-btn:hover { color: #1f2129; background: #eef0f8; }
 
     /* Archive form */
     .arch-form {
-      border: 1px solid #dee0eb; border-radius: 8px; padding: 16px;
-      display: flex; flex-direction: column; gap: 14px;
+      border: 1px solid #dee0eb; border-radius: 4px; padding: 16px;
+      display: flex; flex-direction: column; gap: 16px; background: white;
     }
-    .arch-form__title { font-size: 14px; font-weight: 600; color: #1f2129; }
-    .arch-form__footer { display: flex; align-items: center; gap: 8px; padding-top: 4px; }
+    .arch-form__title { font-size: 16px; font-weight: 600; color: #1f2129; line-height: 24px; }
+    .arch-form__footer { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
+    .arch-form__footer-right { display: flex; align-items: center; gap: 16px; }
 
     /* Recipient card */
     .recip-card {
-      border: 1px solid #dee0eb; border-radius: 8px; padding: 14px;
-      display: flex; flex-direction: column; gap: 10px;
+      border: 1px solid #dee0eb; border-radius: 4px; overflow: hidden;
+      display: flex; align-items: stretch; background: white;
     }
+    .recip-card__icon-wrap {
+      background: #f7f7f7; display: flex; align-items: center; justify-content: center;
+      padding: 8px; flex-shrink: 0; width: 56px;
+    }
+    .recip-card__body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px; }
     .recip-card__top { display: flex; align-items: center; gap: 10px; }
-    .recip-card__info { display: flex; flex-direction: column; gap: 2px; }
-    .recip-card__info strong { font-size: 14px; font-weight: 600; color: #1f2129; }
-    .recip-card__sub { font-size: 12px; color: #5f616a; }
+    .recip-card__info { display: flex; flex-direction: column; gap: 4px; }
+    .recip-card__info strong { font-size: 18px; font-weight: 600; color: #1f2129; line-height: 24px; }
+    .recip-card__sub { font-size: 14px; color: #1f2129; line-height: 20px; }
+    .recip-card__sub b { font-weight: 600; }
     .recip-arch-row {
       display: flex; align-items: center; gap: 8px;
       font-size: 13px; color: #1f2129; padding: 4px 0; border-top: 1px solid #f0f0f0;
@@ -557,47 +595,48 @@ function freshRecipientForm() {
 
     /* Add buttons */
     .add-row-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: none; border: 1px solid #dee0eb; border-radius: 6px;
-      padding: 6px 14px; font-size: 14px; color: #1f2129; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; border: 1px solid #bbbdc8; border-radius: 4px;
+      padding: 0 16px; height: 40px; font-size: 15px; color: #40424b; font-family: inherit;
       cursor: pointer; transition: border-color 0.12s, color 0.12s;
     }
-    .add-row-btn fvdr-icon { font-size: 14px; }
+    .add-row-btn fvdr-icon { font-size: 16px; }
     .add-row-btn:hover { border-color: #2c9c74; color: #2c9c74; }
-    .recip-add-row { display: flex; align-items: center; gap: 12px; }
-    .recip-empty-hint { font-size: 13px; color: #5f616a; }
+    .recip-add-row { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .recip-hint { font-size: 15px; color: #1f2129; line-height: 24px; flex-shrink: 0; }
 
     /* Links */
     .link-btn {
       background: none; border: none; cursor: pointer; padding: 0;
-      font-size: 14px; color: #358CEB; font-family: inherit; display: flex; align-items: center; gap: 4px;
+      font-size: 15px; color: #2c9c74; font-family: inherit; display: flex; align-items: center; gap: 8px;
       transition: opacity 0.12s;
     }
     .link-btn:hover { opacity: 0.75; }
     .link-btn--red { color: #e54430; }
-    .link-btn fvdr-icon { font-size: 14px; }
+    .link-btn fvdr-icon { font-size: 16px; }
     .ghost-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: none; border: 1px solid #dee0eb; border-radius: 6px;
-      padding: 5px 12px; font-size: 13px; color: #5f616a; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; border: 1px solid #bbbdc8; border-radius: 4px;
+      padding: 0 16px; height: 40px; font-size: 15px; color: #40424b; font-family: inherit;
       cursor: pointer; transition: border-color 0.12s;
     }
-    .ghost-btn fvdr-icon { font-size: 14px; }
+    .ghost-btn fvdr-icon { font-size: 16px; }
     .ghost-btn:hover { border-color: #5f616a; }
 
     /* Fields */
     .field { display: flex; flex-direction: column; gap: 4px; }
     .field--grow { flex: 1; }
-    .field--row { flex-direction: row; align-items: center; }
+    .field--row { flex-direction: row; align-items: center; gap: 16px; }
     .field-row { display: flex; gap: 12px; }
-    .field-lbl { font-size: 13px; font-weight: 600; color: #5f616a; }
-    .field-hint { font-size: 11px; color: #9b9da6; }
+    .field-lbl { font-size: 15px; font-weight: 600; color: #1f2129; line-height: 20px; }
+    .field-hint { font-size: 12px; color: #73757f; line-height: 14px; }
     .est-date { font-size: 14px; color: #1f2129; padding-top: 6px; white-space: nowrap; }
 
     /* Order footer */
     .order-footer {
-      display: flex; align-items: center; justify-content: flex-start; gap: 8px;
+      display: flex; align-items: center; justify-content: flex-start; gap: 16px;
       padding: 16px 24px; background: white; flex-shrink: 0;
+      border-top: 1px solid #dee0eb;
     }
 
     /* Modal */
