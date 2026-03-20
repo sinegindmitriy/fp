@@ -182,7 +182,7 @@ function freshRecipientForm() {
               <div class="col-body">
 
                 <!-- Subtitle -->
-                <p class="col-hint" *ngIf="!archiveFormOpen">Create the archive that will be adding to a USB drive</p>
+                <p class="col-hint" *ngIf="archives.length === 0 && !archiveFormOpen">Create the archive that will be adding to a USB drive</p>
 
                 <!-- Archive cards -->
                 <div class="arch-card" *ngFor="let arch of archives">
@@ -264,18 +264,8 @@ function freshRecipientForm() {
               <div class="col-hdr">Recipients</div>
               <div class="col-body">
 
-                <!-- Hint + add row always at top when no form -->
-                <ng-container *ngIf="!recipientFormOpen">
-                  <p class="col-hint">Add recipient or order USB drive with archive for yourself</p>
-                  <div class="recip-add-row">
-                    <fvdr-btn variant="secondary" size="s"
-                              label="Recipient" [icon]="PLUS_ICON"
-                              (clicked)="openRecipientForm()"></fvdr-btn>
-                    <fvdr-btn *ngIf="recipients.length === 0" variant="link" size="s"
-                              label="I am the recipient"
-                              (clicked)="iAmRecipient()"></fvdr-btn>
-                  </div>
-                </ng-container>
+                <!-- Hint (empty state only) -->
+                <p class="col-hint" *ngIf="recipients.length === 0 && !recipientFormOpen">Add recipient or order USB drive with archive for yourself</p>
 
                 <!-- Recipient cards -->
                 <div class="recip-card" *ngFor="let r of recipients">
@@ -352,6 +342,16 @@ function freshRecipientForm() {
                     </button>
                     <fvdr-btn label="Add" size="m" (clicked)="addRecipient()"></fvdr-btn>
                   </div>
+                </div>
+
+                <!-- Add recipient button (below cards) -->
+                <div class="recip-add-row" *ngIf="!recipientFormOpen">
+                  <fvdr-btn variant="secondary" size="s"
+                            label="Recipient" [icon]="PLUS_ICON"
+                            (clicked)="openRecipientForm()"></fvdr-btn>
+                  <fvdr-btn *ngIf="recipients.length === 0" variant="link" size="s"
+                            label="I am the recipient"
+                            (clicked)="iAmRecipient()"></fvdr-btn>
                 </div>
 
               </div>
