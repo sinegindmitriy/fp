@@ -181,6 +181,9 @@ function freshRecipientForm() {
               <div class="col-hdr">Archives</div>
               <div class="col-body">
 
+                <!-- Subtitle -->
+                <p class="col-hint" *ngIf="!archiveFormOpen">Create the archive that will be adding to a USB drive</p>
+
                 <!-- Archive cards -->
                 <div class="arch-card" *ngFor="let arch of archives">
                   <div class="arch-card__icon-wrap">
@@ -264,7 +267,7 @@ function freshRecipientForm() {
 
                 <!-- Hint + add row always at top when no form -->
                 <ng-container *ngIf="!recipientFormOpen">
-                  <p class="recip-hint">Add recipient or order USB drive with archive for yourself</p>
+                  <p class="col-hint">Add recipient or order USB drive with archive for yourself</p>
                   <div class="recip-add-row">
                     <button class="add-row-btn" (click)="openRecipientForm()">
                       <fvdr-icon name="plus"></fvdr-icon> Recipient
@@ -611,16 +614,17 @@ function freshRecipientForm() {
     .recip-form__footer { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
 
     /* Add buttons */
+    .col-hint { font-size: 14px; color: #1f2129; line-height: 20px; flex-shrink: 0; }
+
     .add-row-btn {
       display: inline-flex; align-items: center; gap: 8px;
       background: white; border: 1px solid #bbbdc8; border-radius: 4px;
-      padding: 0 16px; height: 40px; font-size: 15px; color: #40424b; font-family: inherit;
+      padding: 0 12px; height: 32px; font-size: 14px; color: #40424b; font-family: inherit;
       cursor: pointer; transition: border-color 0.12s, color 0.12s;
     }
     .add-row-btn fvdr-icon { font-size: 16px; }
     .add-row-btn:hover { border-color: #2c9c74; color: #2c9c74; }
     .recip-add-row { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
-    .recip-hint { font-size: 15px; color: #1f2129; line-height: 24px; flex-shrink: 0; }
 
     /* Links */
     .link-btn {
