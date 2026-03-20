@@ -270,21 +270,27 @@ function freshRecipientForm() {
                 <!-- Recipient cards -->
                 <div class="recip-card" *ngFor="let r of recipients">
                   <div class="recip-card__icon-wrap">
-                    <fvdr-icon name="participants" style="font-size:24px;color:#5f616a"></fvdr-icon>
+                    <div class="recip-card__icon-btn">
+                      <fvdr-icon name="participants" style="font-size:20px;color:#5f616a"></fvdr-icon>
+                    </div>
                   </div>
                   <div class="recip-card__body">
                     <div class="recip-card__info">
                       <strong>{{ r.fullName }}</strong>
                       <span class="recip-card__sub"><b>Estimated delivery:</b> Sep 20, 2023 to {{ r.country }}</span>
                     </div>
-                    <div class="recip-arch-row" *ngFor="let arch of archives">
-                      <span class="recip-arch-name">{{ arch.name }}</span>
-                      <fvdr-icon name="storage" class="usb-ic"></fvdr-icon>
-                      <span class="usb-label">USB drives</span>
-                      <div class="usb-counter">
-                        <button class="usb-btn" (click)="decUsb(r, arch.id)"><fvdr-icon name="chevron-left"></fvdr-icon></button>
-                        <span>{{ r.usbCounts[arch.id] || 1 }}</span>
-                        <button class="usb-btn" (click)="incUsb(r, arch.id)"><fvdr-icon name="chevron-right"></fvdr-icon></button>
+                    <div class="recip-card__details">
+                      <div class="recip-arch-row" *ngFor="let arch of archives">
+                        <span class="recip-arch-name">{{ arch.name }}</span>
+                        <div class="usb-group">
+                          <fvdr-icon name="storage" class="usb-ic"></fvdr-icon>
+                          <span class="usb-label">USB drives</span>
+                          <div class="usb-stepper">
+                            <button class="usb-btn" (click)="decUsb(r, arch.id)"><fvdr-icon name="chevron-left"></fvdr-icon></button>
+                            <div class="usb-input">{{ r.usbCounts[arch.id] || 1 }}</div>
+                            <button class="usb-btn" (click)="incUsb(r, arch.id)"><fvdr-icon name="chevron-right"></fvdr-icon></button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -590,27 +596,39 @@ function freshRecipientForm() {
     }
     .recip-card__icon-wrap {
       background: #f7f7f7; display: flex; align-items: center; justify-content: center;
-      padding: 8px; flex-shrink: 0; width: 56px;
+      padding: 8px; flex-shrink: 0;
     }
-    .recip-card__body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px; }
-    .recip-card__top { display: flex; align-items: center; gap: 10px; }
-    .recip-card__info { display: flex; flex-direction: column; gap: 4px; }
+    .recip-card__icon-btn {
+      width: 40px; height: 40px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .recip-card__body {
+      flex: 1; display: flex; flex-direction: column; gap: 12px;
+      padding: 16px 16px 16px 16px; min-width: 0;
+    }
+    .recip-card__info { display: flex; flex-direction: column; gap: 0; }
     .recip-card__info strong { font-size: 18px; font-weight: 600; color: #1f2129; line-height: 24px; }
     .recip-card__sub { font-size: 14px; color: #1f2129; line-height: 20px; }
     .recip-card__sub b { font-weight: 600; }
+    .recip-card__details { display: flex; flex-direction: column; gap: 0; }
     .recip-arch-row {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; color: #1f2129; padding: 4px 0; border-top: 1px solid #f0f0f0;
+      display: flex; align-items: center; gap: 16px;
+      font-size: 14px; color: #1f2129; line-height: 20px;
+      background: #fbfbfb; border-radius: 4px; padding: 8px 12px;
     }
-    .recip-arch-name { flex: 1; }
-    .usb-ic { font-size: 14px; color: #5f616a; }
-    .usb-label { font-size: 12px; color: #5f616a; }
-    .usb-counter { display: flex; align-items: center; gap: 0; border: 1px solid #dee0eb; border-radius: 4px; }
-    .usb-btn { background: none; border: none; cursor: pointer; padding: 2px 6px; font-size: 12px; color: #5f616a; display: flex; }
+    .recip-arch-name { flex: 1; font-size: 14px; font-weight: 600; color: #1f2129; }
+    .usb-group { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .usb-ic { font-size: 16px; color: #5f616a; flex-shrink: 0; }
+    .usb-label { font-size: 14px; color: #1f2129; white-space: nowrap; }
+    .usb-stepper { display: flex; align-items: center; gap: 0; }
+    .usb-btn { background: none; border: none; cursor: pointer; padding: 0; width: 20px; height: 20px; font-size: 14px; color: #5f616a; display: flex; align-items: center; justify-content: center; }
     .usb-btn:hover { color: #1f2129; }
-    .usb-counter span { padding: 0 6px; font-size: 13px; min-width: 24px; text-align: center; }
-    .usb-remove { background: none; border: none; cursor: pointer; font-size: 14px; color: #b0b0b0; display: flex; transition: color 0.12s; }
-    .usb-remove:hover { color: #e54430; }
+    .usb-input {
+      width: 40px; height: 32px; border: 1px solid #bbbdc8; border-radius: 4px;
+      font-size: 14px; color: #1f2129; text-align: center;
+      display: flex; align-items: center; justify-content: center;
+      background: white; font-family: inherit;
+    }
 
     /* Recipient form */
     .recip-form { border: 1px solid #dee0eb; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
