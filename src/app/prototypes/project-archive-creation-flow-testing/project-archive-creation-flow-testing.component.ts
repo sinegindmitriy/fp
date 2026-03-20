@@ -542,7 +542,9 @@ function freshRecipientForm() {
       font-size: 14px; font-weight: 600; color: #1f2129;
       border-radius: 4px 4px 0 0;
     }
-    .col-body { display: flex; flex-direction: column; gap: 16px; padding: 16px 0; flex: 1; overflow-y: auto; }
+    .col-body { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: 16px 0; flex: 1; overflow-y: auto; }
+
+    .arch-card, .arch-form, .recip-card, .recip-form, .col-hint, .recip-add-row { align-self: stretch; }
 
     /* Archive card */
     .arch-card {
