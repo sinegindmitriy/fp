@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, HostBinding, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { FvdrIconComponent } from '../../icons/icon.component';
+import { FvdrIconName } from '../../icons/icons';
 
 export type ButtonType = 'primary' | 'secondary' | 'ghost' | 'danger' | 'link';
 export type ButtonSize = 's' | 'm' | 'l';
@@ -30,7 +31,7 @@ export type ButtonSize = 's' | 'm' | 'l';
 @Component({
   selector: 'fvdr-btn',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FvdrIconComponent],
   template: `
     <button
       class="btn btn--{{ variant }} btn--{{ size }}"
@@ -39,7 +40,7 @@ export type ButtonSize = 's' | 'm' | 'l';
       (click)="!disabled && !loading && clicked.emit($event)"
     >
       <span *ngIf="loading" class="btn__spinner"></span>
-      <svg *ngIf="icon && !loading" class="btn__icon" [innerHTML]="safeIcon" width="16" height="16" viewBox="0 0 16 16"></svg>
+      <fvdr-icon *ngIf="icon && !loading" [name]="icon" class="btn__icon"></fvdr-icon>
       <span class="btn__label">{{ label }}</span>
     </button>
   `,
@@ -150,23 +151,17 @@ export type ButtonSize = 's' | 'm' | 'l';
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .btn__icon { flex-shrink: 0; }
+    .btn__icon { flex-shrink: 0; font-size: 16px; }
     .btn__label { line-height: 1; }
   `],
 })
 export class ButtonComponent {
-  private sanitizer = inject(DomSanitizer);
-
   @Input() label = '';
   @Input() variant: ButtonType = 'primary';
   @Input() size: ButtonSize = 'm';
   @Input() disabled = false;
   @Input() loading = false;
-  @Input() icon?: string;
+  @Input() icon?: FvdrIconName;
   @Input() dataTrack?: string;
   @Output() clicked = new EventEmitter<MouseEvent>();
-
-  get safeIcon(): SafeHtml | null {
-    return this.icon ? this.sanitizer.bypassSecurityTrustHtml(this.icon) : null;
-  }
 }

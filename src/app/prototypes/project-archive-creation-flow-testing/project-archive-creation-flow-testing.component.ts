@@ -244,7 +244,7 @@ function freshRecipientForm() {
                       <fvdr-icon name="trash"></fvdr-icon> Delete
                     </button>
                     <div class="arch-form__footer-right">
-                      <fvdr-btn variant="secondary" label="Add and duplicate" [icon]="MOVE_ICON"
+                      <fvdr-btn variant="secondary" label="Add and duplicate" [icon]="COPY_ICON"
                                 (clicked)="addAndDuplicateArchive()"></fvdr-btn>
                       <fvdr-btn label="Add" size="m" (clicked)="addArchive()"></fvdr-btn>
                     </div>
@@ -687,10 +687,10 @@ export class ProjectArchiveCreationFlowTestingComponent implements OnInit, OnDes
   private tracker = inject(TrackerService);
   private toast = inject(ToastService);
 
-  // Icon SVG paths (16×16) for fvdr-btn [icon] input
-  readonly PLUS_ICON  = `<path d="M14 8.85714H8.85714V14H7.14286V8.85714H2V7.14286H7.14286V2H8.85714V7.14286H14V8.85714Z" fill="currentColor"/>`;
-  readonly MOVE_ICON  = `<path fill-rule="evenodd" clip-rule="evenodd" d="M6.44444 2H2.55556C1.7 2 1.00778 2.72 1.00778 3.6L1 13.4C1 14.28 1.7 15 2.55556 15H13.4444C14.3 15 15 14.28 15 13.4V5.2C15 4.32 14.3 3.6 13.4444 3.6H8L6.44444 2ZM5.79889 3.6L7.35444 5H13.4444V13.4H2.55556V3.6H5.79889ZM5 8.76363V10.0364H8.77326L7.43508 11.5004L8.25775 12.4004L11 9.40039L8.25776 6.40039L7.43508 7.30039L8.7726 8.76363H5Z" fill="currentColor"/>`;
-  readonly TRASH_ICON = `<path fill-rule="evenodd" clip-rule="evenodd" d="M10 1V0H6V1H1V3H2V16H14V3H15V1H10ZM4 14V4H5V14H4ZM7 14V4H9V14H7ZM12 14H11V4H12V14Z" fill="currentColor"/>`;
+  // DS icon names for fvdr-btn [icon] input
+  readonly PLUS_ICON  = 'plus'  as const;
+  readonly COPY_ICON  = 'copy'  as const;
+  readonly TRASH_ICON = 'trash' as const;
 
   view: AppView = 'main';
 
