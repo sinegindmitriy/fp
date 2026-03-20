@@ -244,18 +244,17 @@ function freshRecipientForm() {
                       <fvdr-icon name="trash"></fvdr-icon> Delete
                     </button>
                     <div class="arch-form__footer-right">
-                      <button class="ghost-btn" (click)="addAndDuplicateArchive()">
-                        <fvdr-icon name="move"></fvdr-icon> Add and duplicate
-                      </button>
+                      <fvdr-btn variant="secondary" label="Add and duplicate" [icon]="MOVE_ICON"
+                                (clicked)="addAndDuplicateArchive()"></fvdr-btn>
                       <fvdr-btn label="Add" size="m" (clicked)="addArchive()"></fvdr-btn>
                     </div>
                   </div>
                 </div>
 
                 <!-- Add archive button -->
-                <button class="add-row-btn" *ngIf="!archiveFormOpen" (click)="openArchiveForm()">
-                  <fvdr-icon name="plus"></fvdr-icon> Archive
-                </button>
+                <fvdr-btn *ngIf="!archiveFormOpen" variant="secondary" size="s"
+                          label="Archive" [icon]="PLUS_ICON"
+                          (clicked)="openArchiveForm()"></fvdr-btn>
 
               </div>
             </div>
@@ -269,10 +268,12 @@ function freshRecipientForm() {
                 <ng-container *ngIf="!recipientFormOpen">
                   <p class="col-hint">Add recipient or order USB drive with archive for yourself</p>
                   <div class="recip-add-row">
-                    <button class="add-row-btn" (click)="openRecipientForm()">
-                      <fvdr-icon name="plus"></fvdr-icon> Recipient
-                    </button>
-                    <button class="link-btn" *ngIf="recipients.length === 0" (click)="iAmRecipient()">I am the recipient</button>
+                    <fvdr-btn variant="secondary" size="s"
+                              label="Recipient" [icon]="PLUS_ICON"
+                              (clicked)="openRecipientForm()"></fvdr-btn>
+                    <fvdr-btn *ngIf="recipients.length === 0" variant="link" size="s"
+                              label="I am the recipient"
+                              (clicked)="iAmRecipient()"></fvdr-btn>
                   </div>
                 </ng-container>
 
@@ -615,36 +616,18 @@ function freshRecipientForm() {
     .recip-form { border: 1px solid #dee0eb; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
     .recip-form__footer { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
 
-    /* Add buttons */
     .col-hint { font-size: 14px; color: #1f2129; line-height: 20px; flex-shrink: 0; }
-
-    .add-row-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: white; border: 1px solid #bbbdc8; border-radius: 4px;
-      padding: 0 12px; height: 32px; font-size: 14px; color: #40424b; font-family: inherit;
-      cursor: pointer; transition: border-color 0.12s, color 0.12s;
-    }
-    .add-row-btn fvdr-icon { font-size: 16px; }
-    .add-row-btn:hover { border-color: #2c9c74; color: #2c9c74; }
     .recip-add-row { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
 
-    /* Links */
+    /* Delete link buttons (red text, no bg — DS "link danger" style) */
     .link-btn {
       background: none; border: none; cursor: pointer; padding: 0;
-      font-size: 15px; color: #2c9c74; font-family: inherit; display: flex; align-items: center; gap: 8px;
-      transition: opacity 0.12s;
+      font-family: inherit; display: flex; align-items: center; gap: 8px;
+      font-size: 14px; transition: opacity 0.12s;
     }
     .link-btn:hover { opacity: 0.75; }
     .link-btn--red { color: #e54430; }
     .link-btn fvdr-icon { font-size: 16px; }
-    .ghost-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: white; border: 1px solid #bbbdc8; border-radius: 4px;
-      padding: 0 16px; height: 40px; font-size: 15px; color: #40424b; font-family: inherit;
-      cursor: pointer; transition: border-color 0.12s;
-    }
-    .ghost-btn fvdr-icon { font-size: 16px; }
-    .ghost-btn:hover { border-color: #5f616a; }
 
     /* Fields */
     .field { display: flex; flex-direction: column; gap: 4px; }
@@ -703,6 +686,11 @@ function freshRecipientForm() {
 export class ProjectArchiveCreationFlowTestingComponent implements OnInit, OnDestroy {
   private tracker = inject(TrackerService);
   private toast = inject(ToastService);
+
+  // Icon SVG paths (16×16) for fvdr-btn [icon] input
+  readonly PLUS_ICON  = `<path d="M14 8.85714H8.85714V14H7.14286V8.85714H2V7.14286H7.14286V2H8.85714V7.14286H14V8.85714Z" fill="currentColor"/>`;
+  readonly MOVE_ICON  = `<path fill-rule="evenodd" clip-rule="evenodd" d="M6.44444 2H2.55556C1.7 2 1.00778 2.72 1.00778 3.6L1 13.4C1 14.28 1.7 15 2.55556 15H13.4444C14.3 15 15 14.28 15 13.4V5.2C15 4.32 14.3 3.6 13.4444 3.6H8L6.44444 2ZM5.79889 3.6L7.35444 5H13.4444V13.4H2.55556V3.6H5.79889ZM5 8.76363V10.0364H8.77326L7.43508 11.5004L8.25775 12.4004L11 9.40039L8.25776 6.40039L7.43508 7.30039L8.7726 8.76363H5Z" fill="currentColor"/>`;
+  readonly TRASH_ICON = `<path fill-rule="evenodd" clip-rule="evenodd" d="M10 1V0H6V1H1V3H2V16H14V3H15V1H10ZM4 14V4H5V14H4ZM7 14V4H9V14H7ZM12 14H11V4H12V14Z" fill="currentColor"/>`;
 
   view: AppView = 'main';
 
