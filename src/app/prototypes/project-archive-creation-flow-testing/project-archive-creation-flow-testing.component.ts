@@ -473,7 +473,7 @@ function freshRecipientForm() {
     .nav-subitem--active { font-weight: 600; color: #2c9c74; }
 
     .sidebar-bottom {
-      height: 72px; min-height: 72px; background: #f7f7f7; border-top: 1px solid #dee0eb;
+      height: 72px; min-height: 72px; background: #f7f7f7;
       display: flex; align-items: center; padding: 0 16px 0 24px;
       justify-content: space-between; overflow: hidden; flex-shrink: 0;
     }
