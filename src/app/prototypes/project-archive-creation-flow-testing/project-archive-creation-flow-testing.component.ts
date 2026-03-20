@@ -200,7 +200,7 @@ function freshRecipientForm() {
                   </div>
                   <div class="arch-card__actions">
                     <button class="card-ic-btn" (click)="deleteArchive(arch.id)" title="Delete"><fvdr-icon name="trash"></fvdr-icon></button>
-                    <button class="card-ic-btn" (click)="duplicateArchive(arch)" title="Duplicate"><fvdr-icon name="move"></fvdr-icon></button>
+                    <button class="card-ic-btn" (click)="duplicateArchive(arch)" title="Duplicate"><fvdr-icon name="copy"></fvdr-icon></button>
                     <button class="card-ic-btn" (click)="editArchive(arch)" title="Edit"><fvdr-icon name="edit"></fvdr-icon></button>
                   </div>
                 </div>
