@@ -555,8 +555,8 @@ function freshRecipientForm() {
     }
     .arch-card:hover .arch-card__actions { opacity: 1; }
     .arch-card__icon-wrap {
-      background: #f7f7f7; display: flex; align-items: center; justify-content: center;
-      padding: 8px; flex-shrink: 0; width: 56px;
+      background: #f7f7f7; display: flex; align-items: flex-start; justify-content: center;
+      padding: 16px 8px 8px; flex-shrink: 0; width: 56px;
     }
     .arch-card__icon { font-size: 24px; color: #5f616a; }
     .arch-card__body {
