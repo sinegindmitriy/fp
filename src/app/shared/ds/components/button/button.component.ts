@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostBinding, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 export type ButtonType = 'primary' | 'secondary' | 'ghost' | 'danger' | 'link';
 export type ButtonSize = 's' | 'm' | 'l';
@@ -38,7 +39,7 @@ export type ButtonSize = 's' | 'm' | 'l';
       (click)="!disabled && !loading && clicked.emit($event)"
     >
       <span *ngIf="loading" class="btn__spinner"></span>
-      <svg *ngIf="icon && !loading" class="btn__icon" [innerHTML]="icon" width="16" height="16" viewBox="0 0 16 16"></svg>
+      <svg *ngIf="icon && !loading" class="btn__icon" [innerHTML]="safeIcon" width="16" height="16" viewBox="0 0 16 16"></svg>
       <span class="btn__label">{{ label }}</span>
     </button>
   `,
@@ -154,6 +155,8 @@ export type ButtonSize = 's' | 'm' | 'l';
   `],
 })
 export class ButtonComponent {
+  private sanitizer = inject(DomSanitizer);
+
   @Input() label = '';
   @Input() variant: ButtonType = 'primary';
   @Input() size: ButtonSize = 'm';
@@ -162,4 +165,8 @@ export class ButtonComponent {
   @Input() icon?: string;
   @Input() dataTrack?: string;
   @Output() clicked = new EventEmitter<MouseEvent>();
+
+  get safeIcon(): SafeHtml | null {
+    return this.icon ? this.sanitizer.bypassSecurityTrustHtml(this.icon) : null;
+  }
 }
