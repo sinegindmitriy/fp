@@ -593,7 +593,7 @@ function freshRecipientForm() {
 
     /* Recipient card */
     .recip-card {
-      height: 168px; flex-shrink: 0;
+      flex-shrink: 0;
       border: 1px solid #dee0eb; border-radius: 4px; overflow: hidden;
       display: flex; align-items: stretch; background: white;
     }
