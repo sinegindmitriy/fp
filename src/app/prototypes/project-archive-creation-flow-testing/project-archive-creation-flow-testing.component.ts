@@ -540,16 +540,16 @@ function freshRecipientForm() {
 
     /* ── Order view ── */
     .order-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-    .order-cols { flex: 1; display: flex; gap: 32px; padding: 24px; border-bottom: 1px solid #dee0eb; overflow-y: auto; }
-    .col { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+    .order-cols { flex: 1; display: flex; gap: 32px; padding: 24px; border-bottom: 1px solid #dee0eb; overflow: hidden; }
+    .col { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; }
     .col--recipients { flex: 0 0 544px; width: 544px; }
     .col-hdr {
       background: #f7f7f7; height: 48px; min-height: 48px;
       display: flex; align-items: center; padding: 0 16px;
       font-size: 14px; font-weight: 600; color: #1f2129;
-      border-radius: 4px 4px 0 0;
+      border-radius: 4px 4px 0 0; flex-shrink: 0;
     }
-    .col-body { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: 16px 0; flex: 1; overflow-y: auto; }
+    .col-body { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: 16px 0; flex: 1; overflow-y: auto; min-height: 0; }
 
     .arch-card, .arch-form, .recip-card, .recip-form, .col-hint, .recip-add-row { align-self: stretch; }
 
