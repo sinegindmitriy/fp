@@ -407,6 +407,7 @@ function freshRecipientForm() {
     </div>
   `,
   styles: [`
+    :host { display: block; height: 100vh; overflow: hidden; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     .shell {
