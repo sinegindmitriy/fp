@@ -556,6 +556,7 @@ function freshRecipientForm() {
 
     /* Archive card */
     .arch-card {
+      height: 168px; flex-shrink: 0;
       display: flex; align-items: stretch;
       border: 1px solid #dee0eb; border-radius: 4px; overflow: hidden;
       position: relative; transition: background 0.12s; background: white;
@@ -592,6 +593,7 @@ function freshRecipientForm() {
 
     /* Recipient card */
     .recip-card {
+      height: 168px; flex-shrink: 0;
       border: 1px solid #dee0eb; border-radius: 4px; overflow: hidden;
       display: flex; align-items: stretch; background: white;
     }
