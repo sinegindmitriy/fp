@@ -539,10 +539,10 @@ function freshRecipientForm() {
     .sec-desc { font-size: 15px; color: #1f2129; line-height: 24px; }
 
     /* ── Order view ── */
-    .order-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-    .order-cols { flex: 1; display: flex; gap: 32px; padding: 24px; border-bottom: 1px solid #dee0eb; overflow: hidden; }
-    .col { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; }
-    .col--recipients { flex: 0 0 544px; width: 544px; }
+    .order-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+    .order-cols { flex: 1; min-height: 0; display: flex; gap: 32px; padding: 24px; border-bottom: 1px solid #dee0eb; overflow: hidden; }
+    .col { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; overflow: hidden; }
+    .col--recipients { flex: 0 0 544px; width: 544px; min-height: 0; overflow: hidden; }
     .col-hdr {
       background: #f7f7f7; height: 48px; min-height: 48px;
       display: flex; align-items: center; padding: 0 16px;
