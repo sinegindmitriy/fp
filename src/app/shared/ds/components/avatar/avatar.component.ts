@@ -54,7 +54,7 @@ export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
     .avatar__img { width: 100%; height: 100%; object-fit: cover; }
 
     .avatar__initials {
-      color: #fff;
+      color: var(--color-text-inverse);
       font-family: var(--font-family);
       font-weight: 700;
       line-height: 1;
